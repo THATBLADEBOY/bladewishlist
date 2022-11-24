@@ -22,7 +22,7 @@ export default function Dashboard({ session }: { session: Session }) {
   const supabase = useSupabaseClient<Database>();
   const user = useUser();
   const [loading, setLoading] = useState(true);
-  const [dashboardData, setDashboardData] = useState<DashboardResult[]>([]);
+  const [dashboardData, setDashboardData] = useState<any[]>([]);
 
   useEffect(() => {
     getUsers();
