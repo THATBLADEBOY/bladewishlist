@@ -15,7 +15,7 @@ export const AddItemForm = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   let [newItem, setNewItem] = useState("");
   let [isLoading, setIsLoading] = useState(false);
-  let [linkPreviewData, setLinkPreviewData] = useState(null);
+  let [linkPreviewData, setLinkPreviewData] = useState<any>();
 
   const getLinkPreview = async () => {
     setIsLoading(true);
