@@ -60,22 +60,34 @@ export interface Database {
           id: number
           user_id: string
           created_at: string | null
-          product_url: string | null
+          url: string | null
           purchased: boolean
+          title: string | null
+          description: string | null
+          image: string | null
+          favicon: string | null
         }
         Insert: {
           id?: number
           user_id: string
           created_at?: string | null
-          product_url?: string | null
+          url?: string | null
           purchased?: boolean
+          title?: string | null
+          description?: string | null
+          image?: string | null
+          favicon?: string | null
         }
         Update: {
           id?: number
           user_id?: string
           created_at?: string | null
-          product_url?: string | null
+          url?: string | null
           purchased?: boolean
+          title?: string | null
+          description?: string | null
+          image?: string | null
+          favicon?: string | null
         }
       }
     }

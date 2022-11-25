@@ -16,7 +16,11 @@ import {
 } from "@chakra-ui/react";
 import { FiHome, FiStar, FiSettings, FiMenu } from "react-icons/fi";
 import { IconType } from "react-icons";
-import { ReactText } from "react";
+import {
+  useUser,
+  useSupabaseClient,
+  useSession,
+} from "@supabase/auth-helpers-react";
 
 interface LinkItemProps {
   name: string;
@@ -25,7 +29,7 @@ interface LinkItemProps {
 }
 const LinkItems: Array<LinkItemProps> = [
   { name: "Home", icon: FiHome, href: "/" },
-  { name: "My Wishes", icon: FiStar, href: "/wish-list" },
+  { name: "My Wishes", icon: FiStar, href: "/wishlist" },
   { name: "Settings", icon: FiSettings, href: "/settings" },
 ];
 
@@ -64,6 +68,7 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+  const session = useSession();
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
@@ -81,7 +86,15 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem href={link.href} key={link.name} icon={link.icon}>
+        <NavItem
+          href={
+            link.href === "/wishlist"
+              ? link.href + `/${session?.user.id}`
+              : link.href
+          }
+          key={link.name}
+          icon={link.icon}
+        >
           {link.name}
         </NavItem>
       ))}

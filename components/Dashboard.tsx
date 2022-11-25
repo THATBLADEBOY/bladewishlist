@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 import {
   useUser,
   useSupabaseClient,
-  Session,
+  useSession,
 } from "@supabase/auth-helpers-react";
 import { Database } from "../lib/database.types";
 import { Avatar, Text, Box, VStack, HStack } from "@chakra-ui/react";
-import SimpleSidebar from "./SideNav";
 type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
 type WishList = Database["public"]["Tables"]["wish_list"]["Row"];
 type WishListItem = Database["public"]["Tables"]["wish_list_item"]["Row"];
@@ -18,7 +17,8 @@ type DashboardResult = {
   wish_list_item: WishListItem[] | null;
 };
 
-export default function Dashboard({ session }: { session: Session }) {
+export default function Dashboard() {
+  const session = useSession();
   const supabase = useSupabaseClient<Database>();
   const user = useUser();
   const [loading, setLoading] = useState(true);
@@ -38,7 +38,7 @@ export default function Dashboard({ session }: { session: Session }) {
         `username,
           avatar_url,
           wish_list (id, items),
-          wish_list_item (id, product_url)`
+          wish_list_item (id, url)`
       );
 
       console.log(data);
@@ -73,7 +73,7 @@ export default function Dashboard({ session }: { session: Session }) {
   };
 
   return (
-    <SimpleSidebar>
+    <>
       <Text fontSize="4xl" fontWeight="bold" mb={4}>
         Friends
       </Text>
@@ -104,20 +104,11 @@ export default function Dashboard({ session }: { session: Session }) {
                 <Text fontSize={"sm"} color="gray.600">
                   {user.wish_list_item?.length || 0} wishes
                 </Text>
-
-                {/* {getOrderedWishList(
-                  user.wish_list ?? [],
-                  user?.wish_list_item ?? []
-                )?.map((wishListItem) => (
-                  <span key={wishListItem?.id}>
-                    {wishListItem?.product_url}
-                  </span>
-                ))} */}
               </VStack>
             </Box>
           ))}
         </HStack>
       )}
-    </SimpleSidebar>
+    </>
   );
 }
