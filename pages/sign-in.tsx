@@ -1,16 +1,26 @@
+import { Box } from "@chakra-ui/react";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { Auth, ThemeMinimal } from "@supabase/auth-ui-react";
 import { GetServerSidePropsContext } from "next";
 
-const Home = () => {
-  return <>Hello!</>;
+const SignIn = () => {
+  const supabase = useSupabaseClient();
+
+  return (
+    <Box maxW={500}>
+      <Auth
+        supabaseClient={supabase}
+        appearance={{ theme: ThemeMinimal }}
+        theme="dark"
+        magicLink={true}
+      />
+    </Box>
+  );
 };
 
-export default Home;
-
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  // Create authenticated Supabase Client
   const supabase = createServerSupabaseClient(ctx);
-  // Check if we have a session
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -23,3 +33,5 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       },
     };
 };
+
+export default SignIn;

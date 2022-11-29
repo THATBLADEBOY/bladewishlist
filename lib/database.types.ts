@@ -35,59 +35,47 @@ export interface Database {
           website?: string | null
         }
       }
-      wish_list: {
-        Row: {
-          id: number
-          user_id: string
-          created_at: string | null
-          items: string[] | null
-        }
-        Insert: {
-          id?: number
-          user_id: string
-          created_at?: string | null
-          items?: string[] | null
-        }
-        Update: {
-          id?: number
-          user_id?: string
-          created_at?: string | null
-          items?: string[] | null
-        }
-      }
       wish_list_item: {
         Row: {
           id: number
           user_id: string
           created_at: string | null
           url: string | null
-          purchased: boolean
           title: string | null
-          description: string | null
           image: string | null
-          favicon: string | null
         }
         Insert: {
           id?: number
           user_id: string
           created_at?: string | null
           url?: string | null
-          purchased?: boolean
           title?: string | null
-          description?: string | null
           image?: string | null
-          favicon?: string | null
         }
         Update: {
           id?: number
           user_id?: string
           created_at?: string | null
           url?: string | null
-          purchased?: boolean
           title?: string | null
-          description?: string | null
           image?: string | null
-          favicon?: string | null
+        }
+      }
+      wish_list_item_purchase: {
+        Row: {
+          id: number
+          created_at: string | null
+          purchased_by: string
+        }
+        Insert: {
+          id?: number
+          created_at?: string | null
+          purchased_by: string
+        }
+        Update: {
+          id?: number
+          created_at?: string | null
+          purchased_by?: string
         }
       }
     }

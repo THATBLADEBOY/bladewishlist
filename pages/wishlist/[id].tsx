@@ -1,85 +1,49 @@
-import { useRouter } from "next/router";
-import Page from "../../components/Page";
-import {
-  useUser,
-  useSupabaseClient,
-  useSession,
-} from "@supabase/auth-helpers-react";
-import { Database } from "../../lib/database.types";
-import { useEffect, useState } from "react";
-import { Box, Text, Input, Button } from "@chakra-ui/react";
-import { AddItemForm } from "../../components/AddItemForm";
+import { SimpleGrid } from "@chakra-ui/react";
+import { WishCard } from "../../components/WishCard";
+import SideNav from "../../components/SideNav";
+import { GetServerSidePropsContext } from "next";
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 
-const WishList = () => {
-  const session = useSession();
-  const supabase = useSupabaseClient<Database>();
-  const router = useRouter();
-  const { id } = router.query;
-  const [wishes, setWishes] = useState<any[] | null>([]);
-  const [loading, setLoading] = useState(true);
-  const [newWish, setNewWish] = useState("");
-  console.log(id);
+type Wish = {
+  id: string;
+  title: string;
+  url: string;
+  image: string;
+  user_id: string;
+  created_at: string;
+};
 
-  const getWishes = async () => {
-    setLoading(true);
-    const { data, error, status } = await supabase
-      .from("wish_list_item")
-      .select("id, url")
-      .eq("user_id", id);
+type WishesResponse = {
+  wishes: Wish[] | null;
+};
 
-    setWishes(data);
-    setLoading(false);
-    console.log(data);
-  };
-
-  useEffect(() => {
-    if (id) {
-      getWishes();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
-  if (!session) return;
-
-  const createWish = async () => {
-    const { data, error } = await supabase
-      .from("wish_list_item")
-      .insert({ user_id: session.user.id, url: newWish });
-    console.log(data);
-  };
-
-  const getLinkPreview = async () => {
-    await fetch(`/api/getLinkPreview?link=${newWish}`).then((res) =>
-      console.log(res)
-    );
-    // console.log(linkPreviewData);
-  };
-
+const WishList = ({ wishes }: WishesResponse) => {
   return (
-    <Page>
-      {loading ? (
-        <Box>Loading...</Box>
-      ) : (
-        <>
-          <Text fontSize="4xl" fontWeight="bold">
-            wish list
-          </Text>
-          {wishes?.map((wish, i) => (
-            <Box key={wish.id ?? i} bg="white">
-              <div key={wish.id}>{wish.id}</div>
-              <div key={wish.url}>{wish.url}</div>
-            </Box>
-          ))}
-          {/* <Input
-            placeholder="url"
-            onChange={(e) => setNewWish(e.target.value)}
-          />
-          <Button onClick={getLinkPreview}>create wish</Button> */}
-          <AddItemForm />
-        </>
-      )}
-    </Page>
+    <SideNav>
+      <SimpleGrid columns={{ base: 1, md: 2 }}>
+        {wishes?.map((wish, i) => (
+          <WishCard key={i} wish={wish} />
+        ))}
+      </SimpleGrid>
+    </SideNav>
   );
 };
 
 export default WishList;
+
+export async function getServerSideProps(
+  context: GetServerSidePropsContext
+): Promise<{ props: WishesResponse }> {
+  const supabase = createServerSupabaseClient(context);
+  const { id } = context.params as { id: string };
+  const { data, error, status } = await supabase
+    .from("wish_list_item")
+    .select("id, user_id, url, image, title, created_at")
+    .eq("user_id", id);
+
+  return {
+    props: {
+      wishes: data,
+    },
+  };
+}

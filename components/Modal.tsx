@@ -1,12 +1,10 @@
 import {
-  Button,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  useDisclosure,
   Modal as ChakraModal,
 } from "@chakra-ui/react";
 
@@ -15,23 +13,24 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  footer?: React.ReactNode;
 }
 
-export const Modal = ({ children, isOpen, onClose, title }: ModalProps) => {
+export const Modal = ({
+  children,
+  isOpen,
+  onClose,
+  title,
+  footer,
+}: ModalProps) => {
   return (
-    <ChakraModal isOpen={isOpen} onClose={onClose}>
+    <ChakraModal isOpen={isOpen} onClose={onClose} size={"xl"}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>{children}</ModalBody>
-
-        <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
-            Close
-          </Button>
-          <Button variant="ghost">Secondary Action</Button>
-        </ModalFooter>
+        <ModalFooter>{footer}</ModalFooter>
       </ModalContent>
     </ChakraModal>
   );
